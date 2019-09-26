@@ -1,0 +1,39 @@
+{
+    "name": "jco666/name-checker",
+    "description": "Social and domain name availability search.",
+    "keywords": [
+        "social",
+        "medias",
+        "facebook",
+        "instagram",
+        "twitter",
+        "youtube",
+        "vimeo",
+        "dailymotion",
+        "github",
+        "bitbucket",
+        "telegram",
+        "patreon",
+        "php"
+    ],
+    "homepage": "https://github.com/jco666/name-checker",
+    "license": "MIT",
+    "type": "library",
+    "version": "1.0",
+    "authors": [
+        {
+            "name": "Jacob Kuuhaku",
+            "email": "fedhrm@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NameChecker\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
