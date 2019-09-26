@@ -2,8 +2,8 @@
     "name": "jco666/name-checker",
     "description": "Social and domain name availability search.",
     "keywords": [
-        "social",
-        "medias",
+        "social-medias",
+        "domain",
         "facebook",
         "instagram",
         "twitter",
@@ -14,6 +14,7 @@
         "bitbucket",
         "telegram",
         "patreon",
+        "gravatar",
         "php"
     ],
     "homepage": "https://github.com/jco666/name-checker",
@@ -23,17 +24,17 @@
     "authors": [
         {
             "name": "Jacob Kuuhaku",
-            "email": "fedhrm@gmail.com"
+            "email": "fedhrm@gmail.com",
+            "homepage": "https://lsdev.cf",
+            "role": "developer"
         }
     ],
     "require": {
-        "php": ">=5.6.0"
+        "php": ">=5.6"
     },
     "autoload": {
         "psr-4": {
             "NameChecker\\": "src/"
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

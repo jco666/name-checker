@@ -22,7 +22,7 @@ class NCException extends \Exception{
 		$this->message = $msg;
 
 		foreach($this->getTrace() as $trace){
-			if (strpos($trace['file'],'nschecker') === false){
+			if (strpos($trace['file'],'name-checker') === false){
 				$caller = $trace;
 				$this->error_trace = "Error in \"$trace[file]\" on line ($trace[line]).";
 				break;
