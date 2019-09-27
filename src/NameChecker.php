@@ -11,7 +11,7 @@ class NameChecker{
 	 *
 	 * @return array returns the accepted medias
 	 */
-	static function medias(){
+	private static function medias(){
 		return [
 			'facebook' => [
 				'phone' => [
@@ -297,7 +297,7 @@ class NameChecker{
 	 * @throws NCException when the args has not passed
 	 * @return static|object returns instance of object
 	 */
-	static function __callStatic($label, $args){
+	public static function __callStatic($label, $args){
 		if($label == 'domain'){
 			self::$lastResult = gethostbyname($args[0]) != $args[0];
 			return __CLASS__;
@@ -326,7 +326,7 @@ class NameChecker{
 	 *
 	 * @return bool
 	 */
-	static function isThere(){
+	public static function isThere(){
 		return self::$lastResult;
 	}
 
@@ -338,7 +338,7 @@ class NameChecker{
 	 *
 	 * @return bool
 	 */
-	static function isAvailable(){
+	public static function isAvailable(){
 		return self::$lastResult === null ? null : !self::$lastResult;
 	}
 
@@ -349,7 +349,7 @@ class NameChecker{
 	 * @throws NCException when search method not supported or invalid params 
 	 * @return void
 	 */
-	static function find(...$args){
+	private static function find(...$args){
 		$medias = self::medias();
 		switch (count($args)){
 			case 3:
@@ -389,7 +389,7 @@ class NameChecker{
 	 * @param array $values all values to replace in URL
 	 * @return string
 	 */
-	static function parse_endpoint($endpoint,$values=[]){
+	private static function parse_endpoint($endpoint,$values=[]){
 		return str_replace(array_map(function($key){
 			return '{'.$key.'}';
 		}, array_keys($values)), array_values($values), is_callable($endpoint) ? $endpoint($values) : $endpoint);
@@ -401,7 +401,7 @@ class NameChecker{
 	 * @param string $number
 	 * @return bool
 	 */
-	static function is_phone($number=0){
+	private static function is_phone($number=0){
 		$c = preg_replace("/[^0-9]/",'',$number);
 		return $c && strlen($c)>9 && preg_match("/^[1-9]{2}9?[0-9]{8}$/",$c) ? true : false;
 	}
@@ -412,7 +412,7 @@ class NameChecker{
 	 * @param string $email
 	 * @return bool 
 	 */
-	static function is_email($email=''){
+	private static function is_email($email=''){
 		return preg_match('/^\S+@[\w\d.-]{2,}\.[\w]{2,6}$/iU',$email) ? true : false;
 	}
 
@@ -423,7 +423,7 @@ class NameChecker{
 	 * @throws NCException when $options is invalid
 	 * @return mixed 
 	 */
-	static function curl($options=[]){
+	private static function curl($options=[]){
 		if (!isset($options['url']))
 			throw new NCException('CURL options need URL parameter.');
 		$ch = curl_init();
