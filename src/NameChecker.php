@@ -125,7 +125,6 @@ class NameChecker{
 			],
 			'bitbucket' => [
 				'id' => [
-					#'url' => 'https://bitbucket.org/{id}',
 					'url' => 'https://api.bitbucket.org/2.0/users/{id}',
 					'is_valid' => function($v){
 						return preg_match_all('/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/',$v) ? true : false;
@@ -304,12 +303,14 @@ class NameChecker{
 			return __CLASS__;
 		}
 		$label = self::normalize_label($label);
+		$medias = self::medias();
+		if (!isset($medias[$label]))
+			throw new NCException('Social name search not supported.');
 		switch(count($args)){
 			case 2:
 				self::find($label, $args[0], trim($args[1]));
 				break;
 			case 1:
-				$medias = self::medias();
 				self::find($label, count($medias[$label]) == 1 ? array_keys($medias[$label])[0] : (self::is_email($args[0]) ? 'email' : 'id'), trim($args[0]));
 				break;
 			default:
@@ -363,7 +364,6 @@ class NameChecker{
 							$options = array_merge($options, is_callable($medias[$label][$method]['options']) ? $medias[$label][$method]['options']($value) : $medias[$label][$method]['options']);
 						}
 					}else{
-						#new NCException('Invalid '.self::normalize_label($label,false).' '.($method == 'phone' ? 'phone number':$method).'.');
 						return self::$lastResult = null;
 						
 					}
@@ -424,7 +424,6 @@ class NameChecker{
 	 * @return mixed 
 	 */
 	static function curl($options=[]){
-		#var_dump($options);die;
 		if (!isset($options['url']))
 			throw new NCException('CURL options need URL parameter.');
 		$ch = curl_init();
@@ -439,8 +438,8 @@ class NameChecker{
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		curl_setopt($ch, CURLOPT_COOKIESESSION, false);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd().'/cookie.txt');
-		curl_setopt($ch, CURLOPT_COOKIEFILE, getcwd().'/cookie.txt');
+		curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd().'/nc_cookie.txt');
+		curl_setopt($ch, CURLOPT_COOKIEFILE, getcwd().'/nc_cookie.txt');
 		if (isset($options['referrer']))
 			curl_setopt($ch, CURLOPT_REFERER, $options['referrer']);
 		curl_setopt($ch, CURLOPT_VERBOSE, 1);
