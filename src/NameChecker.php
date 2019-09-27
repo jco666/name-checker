@@ -169,6 +169,17 @@ class NameChecker{
 						return preg_match("/404 Not Found/", $c) ? false : true;
 					}
 				]
+			],
+			'mal' => [
+				'id' => [
+					'url' => 'https://myanimelist.net/animelist/{id}/load.json?offset=0&status=10',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/invalid request/", $c) ? false : true;
+					}
+				]
 			]
 		];
 	}
@@ -213,6 +224,8 @@ class NameChecker{
 				return $sort ? 'gv':'gravatar';
 			case 'tl':case 'telegram':
 				return $sort ? 'tl':'telegram';
+			case 'mal':case 'myanimelist':
+				return $sort ? 'mal':'myanimelist';
 			default:
 				throw new NCException('Social name label not found.');
 		}
@@ -254,7 +267,7 @@ class NameChecker{
 				break;
 			case 1:
 				$medias = self::medias();
-				self::find($label, count($medias[$label]) == 1 ? array_keys($medias[$label])[0] : self::is_email($args[0]) ? 'email' : 'id', trim($args[0]));
+				self::find($label, count($medias[$label]) == 1 ? array_keys($medias[$label])[0] : (self::is_email($args[0]) ? 'email' : 'id'), trim($args[0]));
 				break;
 			default:
 				throw new NCException('No parameters for searching a '.$label.' account.');
