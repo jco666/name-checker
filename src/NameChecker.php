@@ -13,7 +13,7 @@ class NameChecker{
 	 */
 	static function medias(){
 		return [
-			'fb' => [
+			'facebook' => [
 				'phone' => [
 					'url' => 'https://mbasic.facebook.com/login/identify/?ctx=recover',
 					'options' => function($v){
@@ -42,7 +42,7 @@ class NameChecker{
 					}
 				]
 			],
-			'ig' => [
+			'instagram' => [
 				'id' => [
 					'url' => 'https://instagram.com/{id}',
 					'is_valid' => function($v){
@@ -53,7 +53,7 @@ class NameChecker{
 					}
 				]
 			],
-			'tw' => [
+			'twitter' => [
 				'id' => [
 					'url' => 'https://twitter.com/{id}',
 					'is_valid' => function($v){
@@ -64,7 +64,7 @@ class NameChecker{
 					}
 				]
 			],
-			'gh' => [
+			'github' => [
 				'id' => [
 					'url' => 'https://api.github.com/users/{id}',
 					'is_valid' => function($v){
@@ -75,7 +75,7 @@ class NameChecker{
 					}
 				]
 			],
-			'sk' => [
+			'slack' => [
 				'id' => [
 					'url' => 'https://{id}.slack.com/',
 					'is_valid' => function($v){
@@ -86,7 +86,7 @@ class NameChecker{
 					}
 				]
 			],
-			'yt' => [
+			'youtube' => [
 				'id' => [
 					'url' => function(){
 						#dumped on https://livecounts.net/script.js		---		CTRL + F: ",channelKeys=["
@@ -101,7 +101,7 @@ class NameChecker{
 					}
 				]
 			],
-			'vm' => [
+			'vimeo' => [
 				'id' => [
 					'url' => 'https://vimeo.com/{id}',
 					'is_valid' => function($v){
@@ -112,7 +112,7 @@ class NameChecker{
 					}
 				]
 			],
-			'dm' => [
+			'dailymotion' => [
 				'id' => [
 					'url' => 'https://api.dailymotion.com/user/{id}',
 					'is_valid' => function($v){
@@ -123,7 +123,7 @@ class NameChecker{
 					}
 				]
 			],
-			'bb' => [
+			'bitbucket' => [
 				'id' => [
 					#'url' => 'https://bitbucket.org/{id}',
 					'url' => 'https://api.bitbucket.org/2.0/users/{id}',
@@ -135,7 +135,7 @@ class NameChecker{
 					}
 				]
 			],
-			'pt' => [
+			'patreon' => [
 				'id' => [
 					'url' => 'https://www.patreon.com/{id}',
 					'is_valid' => function($v){
@@ -146,7 +146,7 @@ class NameChecker{
 					}
 				]
 			],
-			'tl' => [
+			'telegram' => [
 				'id' => [
 					'url' => 'https://telegram.me/{id}',
 					'is_valid' => function($v){
@@ -157,7 +157,7 @@ class NameChecker{
 					}
 				]
 			],
-			'gv' => [
+			'gravatar' => [
 				'email' => [
 					'url' => function($email){
 						return 'https://www.gravatar.com/avatar/'.md5(strtolower(is_array($email) ? $email['email'] : $email)).'?d=404';
@@ -170,7 +170,7 @@ class NameChecker{
 					}
 				]
 			],
-			'mal' => [
+			'myanimelist' => [
 				'id' => [
 					'url' => 'https://myanimelist.net/animelist/{id}/load.json?offset=0&status=10',
 					'is_valid' => function($v){
@@ -178,6 +178,53 @@ class NameChecker{
 					},
 					'check' => function($c){
 						return preg_match("/invalid request/", $c) ? false : true;
+					}
+				]
+			],
+			'kitsu' => [
+				'id' => [
+					'url' => 'https://kitsu.io/api/edge/users?filter%5Bslug%5D={id}',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/pastNames/", $c) ? true : false;
+					}
+				]
+			],
+			'flickr' => [
+				'id' => [
+					'url' => 'https://www.flickr.com/photos/{id}',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/statusCode_404/", $c) ? false : true;
+					}
+				]
+			],
+			'pastebin' => [
+				'id' => [
+					'url' => 'https://pastebin.com/ajax/check_username.php',
+					'options' => function($v){
+						return ['method' => 'POST', 'data' => ['action'=>'check_username','username'=>$v]];
+					},
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]{3,20}$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/green/", $c) ? false : true;
+					}
+				]
+			],
+			'imgur' => [
+				'id' => [
+					'url' => 'https://api.imgur.com/account/v1/accounts/{id}?client_id=546c25a59c58ad7',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/Not Found/", $c) ? false : true;
 					}
 				]
 			]
@@ -191,43 +238,39 @@ class NameChecker{
 	static $lastResult;
 
 	/**
-	 * Identifies the name of social media by accepting acronyms.
+	 * Identifies the name of social media by slug.
 	 *
 	 * @param string $label name of social media
-	 * @param bool $sort for return a sort label
-	 * @throws NCException when the name is not found
 	 * @return string returns the found name
 	 */
-	static function normalize_label($label, $sort=true){
+	static function normalize_label($label){
 		switch($label){
-			case 'fb':case 'facebook':
-				return $sort ? 'fb':'facebook';
-			case 'ig':case 'insta':case 'instagram':
-				return $sort ? 'ig':'instagram';
-			case 'tw':case 'twitter':
-				return $sort ? 'tw':'twitter';
-			case 'gh':case 'github':
-				return $sort ? 'gh':'github';
-			case 'bb':case 'bitbucket':
-				return $sort ? 'bb':'bitbucket';
-			case 'sk':case 'slack':
-				return $sort ? 'sk':'slack';
-			case 'yt':case 'youtube':
-				return $sort ? 'yt':'youtube';
-			case 'vm':case 'vimeo':
-				return $sort ? 'vm':'vimeo';
-			case 'dm':case 'dailymotion':
-				return $sort ? 'dm':'dailymotion';
-			case 'pt':case 'patreon':
-				return $sort ? 'pt':'patreon';
-			case 'gv':case 'gravatar':
-				return $sort ? 'gv':'gravatar';
-			case 'tl':case 'telegram':
-				return $sort ? 'tl':'telegram';
-			case 'mal':case 'myanimelist':
-				return $sort ? 'mal':'myanimelist';
+			case 'fb':
+				return 'facebook';
+			case 'ig':case 'insta':
+				return 'instagram';
+			case 'tw':
+				return 'twitter';
+			case 'gh':
+				return 'github';
+			case 'yt':
+				return 'youtube';
+			case 'vm':
+				return 'vimeo';
+			case 'dm':
+				return 'dailymotion';
+			case 'pt':
+				return 'patreon';
+			case 'gv':
+				return 'gravatar';
+			case 'tl':
+				return 'telegram';
+			case 'mal':
+				return 'myanimelist';
+			case 'ks':case 'hummingbird':
+				return 'kitsu';
 			default:
-				throw new NCException('Social name label not found.');
+				return $label;
 		}
 	}
 
