@@ -3,6 +3,7 @@
     "description": "Social and domain name availability search.",
     "keywords": [
         "social-medias",
+        "domain-checker",
         "domain",
         "facebook",
         "instagram",
@@ -15,12 +16,21 @@
         "telegram",
         "patreon",
         "gravatar",
+        "twitch",
+        "spotify",
+        "soundcloud",
+        "myanimelist",
+        "kitsu",
+        "behance",
+        "dribbble",
+        "medium",
+        "steam",
         "php"
     ],
     "homepage": "https://github.com/jco666/name-checker",
     "license": "MIT",
     "type": "library",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "authors": [
         {
             "name": "Jacob Kuuhaku",
