@@ -82,19 +82,29 @@ NameChecker::facebook('phone', 'fedhrm@gmail.com')::isAvailable();
 | Instagram | ✓ | ✗ | ✗ |
 | Twitter | ✓ | ✗ | ✗ |
 | Youtube | ✓ | ✗ | ✗ |
+| twitch | ✓ | ✗ | ✗ |
 | Vimeo | ✓ | ✗ | ✗ |
 | Dailymotion | ✓ | ✗ | ✗ |
+| spotify | ✓ | ✗ | ✗ |
+| soundcloud | ✓ | ✗ | ✗ |
 | Slack | ✓ | ✗ | ✗ |
 | Github | ✓ | ✗ | ✗ |
 | Bitbucket | ✓ | ✗ | ✗ |
+| behance | ✓ | ✗ | ✗ |
+| dribbble | ✓ | ✗ | ✗ |
+| Flickr | ✓ | ✗ | ✗ |
 | Patreon | ✓ | ✗ | ✗ |
+| medium | ✓ | ✗ | ✗ |
 | Telegram | ✓ | ✗ | ✗ |
-| Gravatar | ✓ | ✗ | ✗ |
+| Gravatar | ✗ | ✓ | ✗ |
 | MyAnimeList | ✓ | ✗ | ✗ |
 | Kitsu | ✓ | ✗ | ✗ |
 | Flickr | ✓ | ✗ | ✗ |
 | Pastebin | ✓ | ✗ | ✗ |
 | Imgur | ✓ | ✗ | ✗ |
+| vk | ✓ | ✗ | ✗ |
+| reddit | ✓ | ✗ | ✗ |
+| steam | ✓ | ✗ | ✗ |
 
 
 ## License
