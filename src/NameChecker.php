@@ -48,8 +48,8 @@ class NameChecker{
 					'is_valid' => function($v){
 						return preg_match_all('/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/im',$v) ? true : false;
 					},
-					'check' => function($c){
-						return preg_match("/@$value/", $c) ? true : false;
+					'check' => function($c, $v){
+						return preg_match("/@$v/i", $c) ? true : false;
 					}
 				]
 			],
@@ -59,8 +59,8 @@ class NameChecker{
 					'is_valid' => function($v){
 						return preg_match_all('/^@?(\w){1,15}$/',$v) ? true : false;
 					},
-					'check' => function($c){
-						return preg_match("/@$value/", $c) || preg_match("/account_suspended/", $c) ? true : false;
+					'check' => function($c, $v){
+						return preg_match("/@$v/i", $c) || preg_match("/account_suspended/", $c) ? true : false;
 					}
 				]
 			],
@@ -226,10 +226,112 @@ class NameChecker{
 						return preg_match("/Not Found/", $c) ? false : true;
 					}
 				]
+			],
+			'medium' => [
+				'id' => [
+					'url' => 'https://medium.com/@{id}/',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/medium:\/\/\@/", $c) ? true : false;
+					}
+				]
+			],
+			'twitch' => [
+				'id' => [
+					'url' => 'https://api.twitch.tv/kraken/channels/{id}',
+					'options' => function($v){
+						return ['headers' => ['client-id: jzkbprff40iqj646a697cyrvl0zt2m6']];
+					},
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/Not Found/", $c) ? false : true;
+					}
+				]
+			],
+			'behance' => [
+				'id' => [
+					'url' => 'https://www.behance.net/{id}',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/errors\-title/", $c) ? false : true;
+					}
+				]
+			],
+			'spotify' => [
+				'id' => [
+					'url' => 'https://open.spotify.com/user/{id}',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/Whoops\!/", $c) ? false : true;
+					}
+				]
+			],
+			'dribbble' => [
+				'id' => [
+					'url' => 'https://dribbble.com/{id}',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/Whoops/", $c) ? false : true;
+					}
+				]
+			],
+			'soundcloud' => [
+				'id' => [
+					'url' => 'https://soundcloud.com/{id}',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/Hear the world/", $c) ? false : true;
+					}
+				]
+			],
+			'reddit' => [
+				'id' => [
+					'url' => 'https://www.reddit.com/user/{id}/',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/either deleted\, banned\, or doesn/", $c) ? false : true;
+					}
+				]
+			],
+			'steam' => [
+				'id' => [
+					'url' => 'https://steamcommunity.com/id/{id}',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/An error was/", $c) ? false : true;
+					}
+				]
+			],
+			'vk' => [
+				'id' => [
+					'url' => 'https://vk.com/{id}',
+					'is_valid' => function($v){
+						return preg_match_all('/^[a-zA-Z0-9_\-]+$/',$v) ? true : false;
+					},
+					'check' => function($c){
+						return preg_match("/404 Not Found/", $c) ? false : true;
+					}
+				]
 			]
 		];
 	}
-
+#var_dump($c);die;
 	/**
 	 * Stores last result for verbose methods you can query.
 	 * @var $lastResult bool
@@ -302,7 +404,7 @@ class NameChecker{
 			self::$lastResult = gethostbyname($args[0]) != $args[0];
 			return __CLASS__;
 		}
-		$label = self::normalize_label($label);
+		$label = self::normalize_label(strtolower($label));
 		$medias = self::medias();
 		if (!isset($medias[$label]))
 			throw new NCException('Social name search not supported.');
@@ -316,6 +418,7 @@ class NameChecker{
 			default:
 				throw new NCException('No parameters for searching a '.$label.' account.');
 		}
+		return __CLASS__;
 	}
 
 	/**
@@ -376,7 +479,7 @@ class NameChecker{
 				if (!is_callable($medias[$label][$method]['check']))
 					throw new NCException('Search parameter "check" must be an anonymous function.');
 
-				return self::$lastResult = $medias[$label][$method]['check'](self::curl($options));
+				return self::$lastResult = $medias[$label][$method]['check'](self::curl($options), $value);
 			default:
 				throw new NCException('Invalid search parameters.');
 		}
@@ -430,7 +533,7 @@ class NameChecker{
 		curl_setopt($ch, CURLOPT_URL, $options['url']);
 		if (isset($options['header']) && $options['header'])
 			curl_setopt($ch, CURLOPT_HEADER, 1);
-		if (isset($options['headers']))
+		if (isset($options['headers']) && is_array($options['headers']))
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $options['headers']);
 		curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);

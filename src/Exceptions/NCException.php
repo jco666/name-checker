@@ -20,9 +20,9 @@ class NCException extends \Exception{
 
 	public function __construct($msg, $e_code = 0){
 		$this->message = $msg;
-
 		foreach($this->getTrace() as $trace){
 			if (strpos($trace['file'],'name-checker') === false){
+				$trace['file'] = explode(realpath(getcwd()).DIRECTORY_SEPARATOR, $trace['file'])[1];
 				$caller = $trace;
 				$this->error_trace = "Error in \"$trace[file]\" on line ($trace[line]).";
 				break;
