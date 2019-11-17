@@ -109,4 +109,4 @@ NameChecker::facebook('phone', 'fedhrm@gmail.com')::isAvailable();
 
 ## License
 
-[MIT](LICENSE) © [Jacob K.](http://lsdev.cf)
+[MIT](LICENSE) © [Nic.](http://ndev.cf)
